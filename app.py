@@ -14,10 +14,18 @@ st.set_page_config(
 st.title("📊 Social Media Account Analysis Tool")
 st.markdown("Enter any YouTube handle (e.g., `@MrBeast`, `@veritasium`, `@GoogleDevelopers`) or Channel ID to audit performance, engagement rates, and content trends.")
 
-# --- SIDEBAR CONFIGURATION ---
+# --- SIDEBAR CONFIGURATION (AUTOMATED SECRETS CHECK) ---
 with st.sidebar:
     st.header("⚙️ Configuration")
-    api_key = st.text_input("YouTube Data API v3 Key", type="password", help="Paste the API key from Google Cloud Console")
+    
+    # Automatically try loading the API key from Streamlit Secrets
+    try:
+        api_key = st.secrets["YOUTUBE_API_KEY"]
+        st.success("🔒 API Key loaded securely from Cloud Secrets.")
+    except Exception:
+        # Fallback to text input if secrets are not configured locally
+        api_key = st.text_input("YouTube Data API v3 Key", type="password", help="Paste the API key from Google Cloud Console")
+        
     max_videos = st.slider("Number of Recent Videos to Analyze", min_value=10, max_value=50, value=25, step=5)
     st.caption("Uses only 3 quota units per search (Free limit: 10,000/day).")
 
